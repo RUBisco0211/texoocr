@@ -14,14 +14,23 @@ concurrency:
 
 jobs:
   release:
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Select Xcode 26.5
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+          xcodebuild -version
+          SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
+          echo "macOS SDK: ${SDK_VERSION}"
+          test "${SDK_VERSION%%.*}" -ge 26
+
       - name: Build Release DMG
         env:
+          REQUIRED_SDK_MAJOR: "26"
           VERSION: ${{ github.ref_name }}
         run: |
           VERSION="${VERSION#v}" ./scripts/build_dmg.sh

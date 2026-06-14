@@ -11,6 +11,7 @@ APP_NAME="TexoOCR"
 APP_PATH="$BUILD_DIR/Products/$CONFIGURATION/$APP_NAME.app"
 DIST_DIR="${DIST_DIR:-$BUILD_DIR/Dist}"
 STAGING_DIR="$BUILD_DIR/DMG"
+REQUIRED_SDK_MAJOR="${REQUIRED_SDK_MAJOR:-}"
 
 VERSION="${VERSION:-$(
     xcodebuild \
@@ -33,6 +34,22 @@ fi
 if [[ ! -d "$APP_PATH" ]]; then
     echo "App not found: $APP_PATH" >&2
     echo "Build it first or run without SKIP_BUILD=YES." >&2
+    exit 1
+fi
+
+APP_INFO_PLIST="$APP_PATH/Contents/Info.plist"
+APP_ICON="$APP_PATH/Contents/Resources/TexoOCR.icns"
+
+if [[ -n "$REQUIRED_SDK_MAJOR" ]]; then
+    SDK_NAME="$(/usr/libexec/PlistBuddy -c "Print :DTSDKName" "$APP_INFO_PLIST" 2>/dev/null || true)"
+    if [[ "$SDK_NAME" != macosx"$REQUIRED_SDK_MAJOR"* ]]; then
+        echo "Expected macOS SDK $REQUIRED_SDK_MAJOR, but app was built with: ${SDK_NAME:-unknown}" >&2
+        exit 1
+    fi
+fi
+
+if [[ ! -f "$APP_ICON" ]]; then
+    echo "Compiled app icon not found: $APP_ICON" >&2
     exit 1
 fi
 
