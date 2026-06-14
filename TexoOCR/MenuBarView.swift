@@ -3,6 +3,7 @@ import SwiftUI
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(spacing: 0) {
@@ -89,6 +90,7 @@ struct MenuBarView: View {
 
                     Button {
                         openWindow(id: "history")
+                        bringWindowToFront(titled: L.historyTitle)
                     } label: {
                         HStack {
                             Spacer()
@@ -143,7 +145,10 @@ struct MenuBarView: View {
 
             // Footer
             HStack {
-                SettingsLink {
+                Button {
+                    openSettings()
+                    bringWindowToFront()
+                } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "gearshape")
                             .font(.system(size: 11))
@@ -175,6 +180,19 @@ struct MenuBarView: View {
         if !appState.engineReady { return .orange }
         if appState.isProcessing { return .blue }
         return .green
+    }
+
+    private func bringWindowToFront(titled title: String? = nil) {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        DispatchQueue.main.async {
+            let windows = NSApplication.shared.windows.filter {
+                $0.isVisible && $0.canBecomeKey && !($0 is NSPanel)
+            }
+            let window = title.flatMap { title in
+                windows.first(where: { $0.title == title })
+            } ?? windows.first
+            window?.makeKeyAndOrderFront(nil)
+        }
     }
 }
 
