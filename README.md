@@ -40,6 +40,19 @@ Xcode project:
 CODE_SIGNING_ALLOWED=YES ./scripts/build.sh
 ```
 
+Build a Release DMG:
+
+```bash
+./scripts/build_dmg.sh
+```
+
+The DMG is written to `build/Dist/TexoOCR-<version>.dmg`. To package an existing
+Release app without rebuilding:
+
+```bash
+SKIP_BUILD=YES ./scripts/build_dmg.sh
+```
+
 You can also open `TexoOCR.xcodeproj` in Xcode 15+ and build with ⌘R.
 
 > **Note:** You need to grant Accessibility permission for the screen capture hotkey to work.
