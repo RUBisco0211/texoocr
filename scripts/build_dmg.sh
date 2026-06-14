@@ -12,14 +12,14 @@ APP_PATH="$BUILD_DIR/Products/$CONFIGURATION/$APP_NAME.app"
 DIST_DIR="${DIST_DIR:-$BUILD_DIR/Dist}"
 STAGING_DIR="$BUILD_DIR/DMG"
 
-VERSION="$(
+VERSION="${VERSION:-$(
     xcodebuild \
         -project "$ROOT_DIR/TexoOCR.xcodeproj" \
         -scheme TexoOCR \
         -configuration "$CONFIGURATION" \
         -showBuildSettings 2>/dev/null |
         awk '/MARKETING_VERSION =/ { print $3; exit }'
-)"
+)}"
 VERSION="${VERSION:-unknown}"
 DMG_PATH="${DMG_PATH:-$DIST_DIR/$APP_NAME-$VERSION.dmg}"
 
