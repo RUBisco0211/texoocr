@@ -19,10 +19,28 @@ A macOS menu bar app that captures formula screenshots and converts them to LaTe
 
 ## Build from Source
 
-1. Clone this repository
-2. Open `TexoOCR.xcodeproj` in Xcode 15+
-3. Wait for Swift Package Manager to resolve dependencies (ONNX Runtime)
-4. Build and run (⌘R)
+Command-line build:
+
+```bash
+./scripts/build.sh
+```
+
+The built app is written to `build/Products/Debug/TexoOCR.app`.
+
+Build a Release app:
+
+```bash
+CONFIGURATION=Release ./scripts/build.sh
+```
+
+Code signing is disabled by default. To use the signing configuration from the
+Xcode project:
+
+```bash
+CODE_SIGNING_ALLOWED=YES ./scripts/build.sh
+```
+
+You can also open `TexoOCR.xcodeproj` in Xcode 15+ and build with ⌘R.
 
 > **Note:** You need to grant Accessibility permission for the screen capture hotkey to work.
 
